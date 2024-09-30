@@ -2,11 +2,11 @@
 
   "run" runs a list of powershell commands written in a file, see additional documentation below
 
-  Arguments:
+**Arguments:**
   FILE- the file from which to read the commands, if no file is specified then it will search for a config.run file in the current working directory
 
 
-  Parameters:
+**Parameters:**
 
   a '#' denotes the beginning of a parameter
 
@@ -15,6 +15,9 @@
   - #no-error: runs the entire list of commands, regardless of if a command fails to execute or otherwise, is useful if not every part of the command process is neccesary, 
       or a command returns a value other than 0 for success
   - #clear-after: after finishing, the command outputs will be cleared.
+
+**Comments**
+you can make a comment just by putting // at the front
 
   
 
@@ -38,6 +41,7 @@ and the command "run test" will run the test.run file
 ## Example Files
 **config.run**
 ```
+//keep my command pallete clean
 #clear-after
 g++ main.cpp -l lib.dll -o main.exe
 main --example_flag
@@ -53,6 +57,7 @@ main --debug
 ```
 #no-error
 #clear-after
+//compile with no linked library
 g++ main.cpp -o main.exe
 main
 ```

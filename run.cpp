@@ -37,8 +37,12 @@ int main(int argc, char** argv) {
         - #no-error: runs the entire list of commands, regardless of if a command fails to execute or otherwise, is useful if not every part of the command process is neccesary, 
             or a command returns a value other than 0 for success
         - #clear-after: after finishing, the command outputs will be cleared.
+
+    Comments:
+    "//" at the beginning of a line denotes a comment
     
-     Example:
+    
+    Example:
 
     Assume we have a directory:
     
@@ -72,6 +76,7 @@ int main(int argc, char** argv) {
 
     test.run
     ```
+    // run with no error
     #no-error
     #clear-after
     g++ main.cpp -o main.exe

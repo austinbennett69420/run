@@ -3,10 +3,13 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
-#include <windows.h>
 
 using namespace std;
+
+
+
 
 
 
@@ -14,6 +17,7 @@ int main(int argc, char** argv) {
     //clear when we start
     system("cls");
     ifstream run_commands;
+
     //flags
     bool run_with_no_error = false;
     bool clear_when_done = false;
@@ -36,7 +40,10 @@ int main(int argc, char** argv) {
 
         - #no-error: runs the entire list of commands, regardless of if a command fails to execute or otherwise, is useful if not every part of the command process is neccesary, 
             or a command returns a value other than 0 for success
+
         - #clear-after: after finishing, the command outputs will be cleared.
+
+        -#define [name] [string]: define a name to be a string, useful when you use the same string many many times
 
     Comments:
     "//" at the beginning of a line denotes a comment
@@ -48,10 +55,13 @@ int main(int argc, char** argv) {
     
     dir/
     ->main.cpp
+    ->test.cpp
     ->debug.txt
     ->config.run
     ->test.run
     ->lib.dll
+    ->new.dll
+    ->sad.dll
     
 
     lets say all of these files compile and run main.cpp with different parameters and maybe with or without lib.dll,
@@ -64,7 +74,11 @@ int main(int argc, char** argv) {
     config.run
     ```
     #clear-after
-    g++ main.cpp -l lib.dll -o main.exe
+    #define libraries lib.dll new.dll sad.dll
+
+    //'libraries' will be replaced with the defined keyword above!
+    g++ test.cpp -l libraries -o main.exe
+    g++ main.cpp -l libraries -o main.exe
     main --example_flag
     ```
 
@@ -79,6 +93,7 @@ int main(int argc, char** argv) {
     // run with no error
     #no-error
     #clear-after
+    #
     g++ main.cpp -o main.exe
     main
     ```
@@ -121,29 +136,63 @@ int main(int argc, char** argv) {
         }
     }
 
-    //run the file
+    map<string, string> defined;
+    int start = 0;
+    
+
+    //parse the file
     string command;
     while (getline(run_commands, command)) {
+        //check for empty line
         if (command.length() == 0) {
             continue;
         } else {
+            //check for comment
             if (command.length() >= 2) {
                 if (command.substr(0, 2) == "//") {
                     continue;
                 }
             }
+            //check for a parameter
             if (command[0] == '#') {
+                //run the whole program with no errors
                 if (command == "#no-error") {
                     run_with_no_error = true;
                     continue;
                 }
+                //clear the console after we finish running
                 if (command == "#clear-after") {
                     clear_when_done = true;
                     continue;
                 }
+                //define a name (see documentation)
+                if (command.length() >= 7) {//#define [name] [string]
+                    if (command.substr(0, 7) == "#define") {
+                        for (int i = 8; i < command.length(); i++) {
+                            if (command[i] == ' ') {
+                                defined[command.substr(8, i-8)] = command.substr(i+1);
+                                break;
+                            }
+                        }
+                    }
+                    continue;
+                }
             }
+            //replace the command with our parameters O(n^2) :(
+            for (pair<string, string> pairs: defined) {
+                for (int i = 0; i < command.length()-pairs.first.length()+1; i++) {
+                    //if a substring of the command up to the length of the parameter name is the name we will replace it
+                    if (command.substr(i, pairs.first.length()) == pairs.first) {
+                        command = command.substr(0, i) + pairs.second + command.substr(i+pairs.first.length());
+                        start = i;
+                    }
+                }
+                
+            }
+
+            //execute the command
             cout << "Executing: " << command << endl;
-            if (system(command.c_str()) != 0) {
+            if (system(command.c_str()) != 0) {//if the commands return value != 1 and run_with_no_error is not set, abort
                 if (!run_with_no_error) {
                     cout << "Error occured running command: " << command << "\nExiting...\n";
                     exit(2);
@@ -160,6 +209,4 @@ int main(int argc, char** argv) {
     run_commands.close();
 
     return 0;
-
-
 }

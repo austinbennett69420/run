@@ -23,20 +23,24 @@ int main(int argc, char** argv) {
     bool clear_when_done = false;
 
     //documentation
-    const char* doc = R"(
+    const char doc[] = R"(
     ========RUN COMMAND DOCUMENTATION========
 
     "run" runs a list of powershell commands written in a file, see additional documentation below
 
-    Arguments:
+    Usage:
+
+    run [FILE]
+
     FILE- the file from which to read the commands, if no file is specified then it will search for a config.run file in the current working directory
+    if a file with no extension is specified it will assume a .run extension
 
 
     Parameters:
 
     a '#' denotes the beginning of a parameter
 
-    Currently there are 2 parameters that can be used
+    Currently there are 3 parameters that can be used
 
         - #no-error: runs the entire list of commands, regardless of if a command fails to execute or otherwise, is useful if not every part of the command process is neccesary, 
             or a command returns a value other than 0 for success

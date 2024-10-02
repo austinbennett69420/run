@@ -14,7 +14,10 @@
 
   - #no-error: runs the entire list of commands, regardless of if a command fails to execute or otherwise, is useful if not every part of the command process is neccesary, 
       or a command returns a value other than 0 for success
+    
   - #clear-after: after finishing, the command outputs will be cleared.
+
+  - #define [name] [string]: define a name to be a string, useful when you use the same string many many times
 
 **Comments**
 you can make a comment just by putting // at the front
@@ -26,11 +29,14 @@ you can make a comment just by putting // at the front
 Assume we have a directory:
 ```
 dir/
-  ->main.cpp
-  ->debug.txt
-  ->config.run
-  ->test.run
-  ->lib.dll
+    ->main.cpp
+    ->test.cpp
+    ->debug.txt
+    ->config.run
+    ->test.run
+    ->lib.dll
+    ->new.dll
+    ->sad.dll
 ```
 
 lets say all of these files compile and run main.cpp with different parameters and maybe with or without lib.dll,
@@ -39,13 +45,18 @@ the command "run debug.txt" will run the commands in the debug.txt file
 and the command "run test" will run the test.run file
 
 ## Example Files
-**config.run**
+config.run
 ```
-//keep my command pallete clean
 #clear-after
-g++ main.cpp -l lib.dll -o main.exe
+#define libraries lib.dll new.dll sad.dll
+
+//'libraries' will be replaced with the defined keyword above!
+g++ test.cpp -l libraries -o main.exe
+g++ main.cpp -l libraries -o main.exe
 main --example_flag
 ```
+
+In the example above we can see the #define parameter in action!
 
 **debug.txt**
 ```

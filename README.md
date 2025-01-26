@@ -4,7 +4,7 @@
 
 **Usage:**
 
-  **run** *[FILE]*
+  **run** *-f [FILE]*
 
   FILE- the file from which to read the commands, if no file is specified then it will search for a config.run file in the current working directory
   if a file with no extension is specified it will assume a .run extension
